@@ -2,13 +2,44 @@
 title: "Interpolación lineal ponderada por la distancia inversa"
 author: "Geomorfología (GEO-114)."
 date: "`r format(Sys.Date(), '%Y-%m-%d')`"
-output: github_document
+output:
+  # bookdown::github_document2:
+  #   number_sections: false
+  #   fig_caption: yes
+  bookdown::html_document2:
+    number_sections: false
+    code_folding: hide
+    fig_caption: yes
+    md_extensions: "-fancy_lists"
+    css: estilos.css
+    toc: true
+    toc_depth: 3
+editor_options: 
+  chunk_output_type: console
+always_allow_html: true
 ---
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
+
+
+```{r, include=F}
+# Agregar la variable `output_format` para identificar el formato de salida
+output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+```
+
+```{r, results='asis', echo=F}
+# Insertar el enlace basado en el formato de salida
+if (grepl('gfm', output_format)) {
+  cat('Versión HTML (más legible e interactiva), [aquí](README.html)\n')
+} else if (output_format == 'latex') {
+  cat('Versión HTML (quizá más legible), [aquí](README.html)\n')
+}
+```
+
+
 
 
 ## Introducción
@@ -87,7 +118,7 @@ z_P
 Mandato: estima, por medio de interpolación lineal ponderada por la distancia inversa, el valor de la variable \( Z \) en el punto \( P \) de coordenadas \( X, Y ) \)
 
 
-```{r, results='asis', echo=F}
+```{r, results='asis', echo=T}
 # Cargar las librerías necesarias
 library(knitr)
 library(dplyr)
@@ -142,7 +173,6 @@ for (table in tables_list) {
 }
 ```
 
-
 ## Función para calcular el valor interpolado en un punto P usando IDW
 
 ```{r}
@@ -158,8 +188,11 @@ idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
   
   return(list(distances= distances, z_p=z_p))
 }
+```
 
-# Calcular el valor interpolado en P para el estudiante 1
+Aplicar la función para calcular el valor interpolado en P para todos los estudiantes
+
+```{r}
 solucion <- sapply(1:20, function(estudiante) idw_interpolation(
     x_coords = tables_df[[estudiante]][1:3,]$X,
     y_coords = tables_df[[estudiante]][1:3,]$Y,

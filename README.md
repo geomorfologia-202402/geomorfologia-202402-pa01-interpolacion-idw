@@ -3,6 +3,8 @@ Interpolación lineal ponderada por la distancia inversa
 Geomorfología (GEO-114).
 2024-08-20
 
+Versión HTML (más legible e interactiva), [aquí](README.html)
+
 ## Introducción
 
 En este ejercicio, calcularemos el valor de la variable $z$ en un punto
@@ -99,6 +101,61 @@ z_P
 Mandato: estima, por medio de interpolación lineal ponderada por la
 distancia inversa, el valor de la variable $Z$ en el punto $P$ de
 coordenadas $X, Y )$
+
+``` r
+# Cargar las librerías necesarias
+library(knitr)
+library(dplyr)
+
+# Número de estudiantes
+num_students <- 20
+
+# Función para generar una tabla para cada estudiante
+generate_table <- function(student_id) {
+  
+  # Generar coordenadas y valores de Z aleatorios para los puntos A, B, C
+  points <- data.frame(
+    `ID Punto` = c("A", "B", "C"),
+    X = sample(1:10, 3),
+    Y = sample(1:10, 3),
+    Z = sample(10:100, 3),
+    check.names = F
+  )
+  
+  # Generar las coordenadas del punto P para el estudiante
+  point_P <- data.frame(
+    `ID Punto` = "P",
+    X = sample(1:10, 1),
+    Y = sample(1:10, 1),
+    Z = NA,
+    check.names = F
+  )
+  
+  # Combinar las coordenadas de los puntos A, B, C y P
+  full_table <- bind_rows(points, point_P)
+  
+  # Crear una lista que combine el encabezado con la tabla
+  output <- list(
+    paste0("**Estudiante #", student_id, "**"),
+    kable(full_table, align = "c")
+  )
+  
+  return(list(full_table, output))
+}
+
+# Generar las 20 tablas estableceiendo la semilla para reproducibilidad
+set.seed(123); tables_list <- lapply(
+  1:num_students, function(x) generate_table(x)[[2]])
+set.seed(123); tables_df <- lapply(
+  1:num_students, function(x) generate_table(x)[[1]])
+
+# Imprimir las tablas
+for (table in tables_list) {
+  cat(table[[1]], "\n\n")
+  print(table[[2]])
+  cat("\n\n")
+}
+```
 
 **Estudiante \#1**
 
@@ -295,8 +352,12 @@ idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
   
   return(list(distances= distances, z_p=z_p))
 }
+```
 
-# Calcular el valor interpolado en P para el estudiante 1
+Aplicar la función para calcular el valor interpolado en P para todos
+los estudiantes
+
+``` r
 solucion <- sapply(1:20, function(estudiante) idw_interpolation(
     x_coords = tables_df[[estudiante]][1:3,]$X,
     y_coords = tables_df[[estudiante]][1:3,]$Y,
