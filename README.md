@@ -3,6 +3,9 @@ Interpolación lineal ponderada por la distancia inversa
 Geomorfología (GEO-114).
 2024-08-20
 
+Versión HTML (quizá más legible),
+[aquí](https://geomorfologia-master.github.io/interpolacion-idw/README.html)
+
 ## Introducción
 
 En este ejercicio, calcularemos el valor de la variable $z$ en un punto
@@ -99,6 +102,61 @@ z_P
 Mandato: estima, por medio de interpolación lineal ponderada por la
 distancia inversa, el valor de la variable $Z$ en el punto $P$ de
 coordenadas $X, Y )$
+
+``` r
+# Cargar las librerías necesarias
+library(knitr)
+library(dplyr)
+
+# Número de estudiantes
+num_students <- 20
+
+# Función para generar una tabla para cada estudiante
+generate_table <- function(student_id) {
+  
+  # Generar coordenadas y valores de Z aleatorios para los puntos A, B, C
+  points <- data.frame(
+    `ID Punto` = c("A", "B", "C"),
+    X = sample(1:10, 3),
+    Y = sample(1:10, 3),
+    Z = sample(10:100, 3),
+    check.names = F
+  )
+  
+  # Generar las coordenadas del punto P para el estudiante
+  point_P <- data.frame(
+    `ID Punto` = "P",
+    X = sample(1:10, 1),
+    Y = sample(1:10, 1),
+    Z = NA,
+    check.names = F
+  )
+  
+  # Combinar las coordenadas de los puntos A, B, C y P
+  full_table <- bind_rows(points, point_P)
+  
+  # Crear una lista que combine el encabezado con la tabla
+  output <- list(
+    paste0("**Estudiante #", student_id, "**"),
+    kable(full_table, align = "c")
+  )
+  
+  return(list(full_table, output))
+}
+
+# Generar las 20 tablas estableceiendo la semilla para reproducibilidad
+set.seed(123); tables_list <- lapply(
+  1:num_students, function(x) generate_table(x)[[2]])
+set.seed(123); tables_df <- lapply(
+  1:num_students, function(x) generate_table(x)[[1]])
+
+# Imprimir las tablas
+for (table in tables_list) {
+  cat(table[[1]], "\n\n")
+  print(table[[2]])
+  cat("\n\n")
+}
+```
 
 **Estudiante \#1**
 
@@ -295,15 +353,19 @@ idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
   
   return(list(distances= distances, z_p=z_p))
 }
+```
 
-# Calcular el valor interpolado en P para el estudiante 1
+Aplicar la función para calcular el valor interpolado en P para todos
+los estudiantes
+
+``` r
 solucion <- sapply(1:20, function(estudiante) idw_interpolation(
     x_coords = tables_df[[estudiante]][1:3,]$X,
     y_coords = tables_df[[estudiante]][1:3,]$Y,
     z_values = tables_df[[estudiante]][1:3,]$Z,
     x_p = tables_df[[estudiante]][4,]$X,
     y_p = tables_df[[estudiante]][4,]$Y,
-    p = 3), simplify = F)
+    p = 2), simplify = F)
 names(solucion) <- paste0('Estudiante ', 1:20)
 solucion
 ```
@@ -313,7 +375,7 @@ solucion
     ## [1] 7.000000 7.615773 6.082763
     ## 
     ## $`Estudiante 1`$z_p
-    ## [1] 50.98418
+    ## [1] 48.91575
     ## 
     ## 
     ## $`Estudiante 2`
@@ -321,7 +383,7 @@ solucion
     ## [1] 6.082763 8.062258 2.828427
     ## 
     ## $`Estudiante 2`$z_p
-    ## [1] 19.07002
+    ## [1] 20.70972
     ## 
     ## 
     ## $`Estudiante 3`
@@ -329,7 +391,7 @@ solucion
     ## [1] 5 2 6
     ## 
     ## $`Estudiante 3`$z_p
-    ## [1] 79.36625
+    ## [1] 74.38811
     ## 
     ## 
     ## $`Estudiante 4`
@@ -337,7 +399,7 @@ solucion
     ## [1] 3.162278 5.656854 7.071068
     ## 
     ## $`Estudiante 4`$z_p
-    ## [1] 78.746
+    ## [1] 73.98347
     ## 
     ## 
     ## $`Estudiante 5`
@@ -345,7 +407,7 @@ solucion
     ## [1] 5.099020 6.708204 2.236068
     ## 
     ## $`Estudiante 5`$z_p
-    ## [1] 32.01841
+    ## [1] 39.66885
     ## 
     ## 
     ## $`Estudiante 6`
@@ -353,7 +415,7 @@ solucion
     ## [1] 3.162278 5.099020 4.000000
     ## 
     ## $`Estudiante 6`$z_p
-    ## [1] 43.67921
+    ## [1] 41.63158
     ## 
     ## 
     ## $`Estudiante 7`
@@ -361,7 +423,7 @@ solucion
     ## [1] 5.830952 1.000000 4.123106
     ## 
     ## $`Estudiante 7`$z_p
-    ## [1] 94.96537
+    ## [1] 91.51351
     ## 
     ## 
     ## $`Estudiante 8`
@@ -369,7 +431,7 @@ solucion
     ## [1] 6.403124 3.162278 2.236068
     ## 
     ## $`Estudiante 8`$z_p
-    ## [1] 59.43649
+    ## [1] 63.95489
     ## 
     ## 
     ## $`Estudiante 9`
@@ -377,7 +439,7 @@ solucion
     ## [1] 9.848858 1.000000 8.062258
     ## 
     ## $`Estudiante 9`$z_p
-    ## [1] 92.91935
+    ## [1] 92.34962
     ## 
     ## 
     ## $`Estudiante 10`
@@ -385,7 +447,7 @@ solucion
     ## [1] 8.062258 2.236068 9.055385
     ## 
     ## $`Estudiante 10`$z_p
-    ## [1] 18.69287
+    ## [1] 25.26628
     ## 
     ## 
     ## $`Estudiante 11`
@@ -393,7 +455,7 @@ solucion
     ## [1] 3.162278 2.828427 2.236068
     ## 
     ## $`Estudiante 11`$z_p
-    ## [1] 35.79899
+    ## [1] 34.88235
     ## 
     ## 
     ## $`Estudiante 12`
@@ -401,7 +463,7 @@ solucion
     ## [1] 1.414214 2.000000 6.324555
     ## 
     ## $`Estudiante 12`$z_p
-    ## [1] 34.38147
+    ## [1] 39.25806
     ## 
     ## 
     ## $`Estudiante 13`
@@ -409,7 +471,7 @@ solucion
     ## [1] 3.605551 4.123106 4.472136
     ## 
     ## $`Estudiante 13`$z_p
-    ## [1] 75.49856
+    ## [1] 74.61267
     ## 
     ## 
     ## $`Estudiante 14`
@@ -417,7 +479,7 @@ solucion
     ## [1] 6.403124 1.414214 1.000000
     ## 
     ## $`Estudiante 14`$z_p
-    ## [1] 52.76717
+    ## [1] 52.976
     ## 
     ## 
     ## $`Estudiante 15`
@@ -425,7 +487,7 @@ solucion
     ## [1] 3.605551 6.082763 5.830952
     ## 
     ## $`Estudiante 15`$z_p
-    ## [1] 80.38555
+    ## [1] 78.17377
     ## 
     ## 
     ## $`Estudiante 16`
@@ -433,7 +495,7 @@ solucion
     ## [1] 4.000000 6.324555 5.099020
     ## 
     ## $`Estudiante 16`$z_p
-    ## [1] 58.87329
+    ## [1] 60.79389
     ## 
     ## 
     ## $`Estudiante 17`
@@ -441,7 +503,7 @@ solucion
     ## [1] 3.605551 8.062258 5.099020
     ## 
     ## $`Estudiante 17`$z_p
-    ## [1] 32.39191
+    ## [1] 37.88235
     ## 
     ## 
     ## $`Estudiante 18`
@@ -449,7 +511,7 @@ solucion
     ## [1] 8.000000 1.000000 5.656854
     ## 
     ## $`Estudiante 18`$z_p
-    ## [1] 19.27261
+    ## [1] 20.56716
     ## 
     ## 
     ## $`Estudiante 19`
@@ -457,7 +519,7 @@ solucion
     ## [1] 5.385165 2.236068 8.000000
     ## 
     ## $`Estudiante 19`$z_p
-    ## [1] 64.15889
+    ## [1] 62.44981
     ## 
     ## 
     ## $`Estudiante 20`
@@ -465,4 +527,4 @@ solucion
     ## [1] 6.324555 3.162278 5.385165
     ## 
     ## $`Estudiante 20`$z_p
-    ## [1] 42.43885
+    ## [1] 45.5027
