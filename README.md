@@ -297,11 +297,172 @@ idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
 }
 
 # Calcular el valor interpolado en P para el estudiante 1
-sapply(1:20, function(estudiante) idw_interpolation(
+solucion <- sapply(1:20, function(estudiante) idw_interpolation(
     x_coords = tables_df[[estudiante]][1:3,]$X,
     y_coords = tables_df[[estudiante]][1:3,]$Y,
     z_values = tables_df[[estudiante]][1:3,]$Z,
     x_p = tables_df[[estudiante]][4,]$X,
     y_p = tables_df[[estudiante]][4,]$Y,
     p = 3), simplify = F)
+names(solucion) <- paste0('Estudiante ', 1:20)
+solucion
 ```
+
+    ## $`Estudiante 1`
+    ## $`Estudiante 1`$distances
+    ## [1] 7.000000 7.615773 6.082763
+    ## 
+    ## $`Estudiante 1`$z_p
+    ## [1] 50.98418
+    ## 
+    ## 
+    ## $`Estudiante 2`
+    ## $`Estudiante 2`$distances
+    ## [1] 6.082763 8.062258 2.828427
+    ## 
+    ## $`Estudiante 2`$z_p
+    ## [1] 19.07002
+    ## 
+    ## 
+    ## $`Estudiante 3`
+    ## $`Estudiante 3`$distances
+    ## [1] 5 2 6
+    ## 
+    ## $`Estudiante 3`$z_p
+    ## [1] 79.36625
+    ## 
+    ## 
+    ## $`Estudiante 4`
+    ## $`Estudiante 4`$distances
+    ## [1] 3.162278 5.656854 7.071068
+    ## 
+    ## $`Estudiante 4`$z_p
+    ## [1] 78.746
+    ## 
+    ## 
+    ## $`Estudiante 5`
+    ## $`Estudiante 5`$distances
+    ## [1] 5.099020 6.708204 2.236068
+    ## 
+    ## $`Estudiante 5`$z_p
+    ## [1] 32.01841
+    ## 
+    ## 
+    ## $`Estudiante 6`
+    ## $`Estudiante 6`$distances
+    ## [1] 3.162278 5.099020 4.000000
+    ## 
+    ## $`Estudiante 6`$z_p
+    ## [1] 43.67921
+    ## 
+    ## 
+    ## $`Estudiante 7`
+    ## $`Estudiante 7`$distances
+    ## [1] 5.830952 1.000000 4.123106
+    ## 
+    ## $`Estudiante 7`$z_p
+    ## [1] 94.96537
+    ## 
+    ## 
+    ## $`Estudiante 8`
+    ## $`Estudiante 8`$distances
+    ## [1] 6.403124 3.162278 2.236068
+    ## 
+    ## $`Estudiante 8`$z_p
+    ## [1] 59.43649
+    ## 
+    ## 
+    ## $`Estudiante 9`
+    ## $`Estudiante 9`$distances
+    ## [1] 9.848858 1.000000 8.062258
+    ## 
+    ## $`Estudiante 9`$z_p
+    ## [1] 92.91935
+    ## 
+    ## 
+    ## $`Estudiante 10`
+    ## $`Estudiante 10`$distances
+    ## [1] 8.062258 2.236068 9.055385
+    ## 
+    ## $`Estudiante 10`$z_p
+    ## [1] 18.69287
+    ## 
+    ## 
+    ## $`Estudiante 11`
+    ## $`Estudiante 11`$distances
+    ## [1] 3.162278 2.828427 2.236068
+    ## 
+    ## $`Estudiante 11`$z_p
+    ## [1] 35.79899
+    ## 
+    ## 
+    ## $`Estudiante 12`
+    ## $`Estudiante 12`$distances
+    ## [1] 1.414214 2.000000 6.324555
+    ## 
+    ## $`Estudiante 12`$z_p
+    ## [1] 34.38147
+    ## 
+    ## 
+    ## $`Estudiante 13`
+    ## $`Estudiante 13`$distances
+    ## [1] 3.605551 4.123106 4.472136
+    ## 
+    ## $`Estudiante 13`$z_p
+    ## [1] 75.49856
+    ## 
+    ## 
+    ## $`Estudiante 14`
+    ## $`Estudiante 14`$distances
+    ## [1] 6.403124 1.414214 1.000000
+    ## 
+    ## $`Estudiante 14`$z_p
+    ## [1] 52.76717
+    ## 
+    ## 
+    ## $`Estudiante 15`
+    ## $`Estudiante 15`$distances
+    ## [1] 3.605551 6.082763 5.830952
+    ## 
+    ## $`Estudiante 15`$z_p
+    ## [1] 80.38555
+    ## 
+    ## 
+    ## $`Estudiante 16`
+    ## $`Estudiante 16`$distances
+    ## [1] 4.000000 6.324555 5.099020
+    ## 
+    ## $`Estudiante 16`$z_p
+    ## [1] 58.87329
+    ## 
+    ## 
+    ## $`Estudiante 17`
+    ## $`Estudiante 17`$distances
+    ## [1] 3.605551 8.062258 5.099020
+    ## 
+    ## $`Estudiante 17`$z_p
+    ## [1] 32.39191
+    ## 
+    ## 
+    ## $`Estudiante 18`
+    ## $`Estudiante 18`$distances
+    ## [1] 8.000000 1.000000 5.656854
+    ## 
+    ## $`Estudiante 18`$z_p
+    ## [1] 19.27261
+    ## 
+    ## 
+    ## $`Estudiante 19`
+    ## $`Estudiante 19`$distances
+    ## [1] 5.385165 2.236068 8.000000
+    ## 
+    ## $`Estudiante 19`$z_p
+    ## [1] 64.15889
+    ## 
+    ## 
+    ## $`Estudiante 20`
+    ## $`Estudiante 20`$distances
+    ## [1] 6.324555 3.162278 5.385165
+    ## 
+    ## $`Estudiante 20`$z_p
+    ## [1] 42.43885
