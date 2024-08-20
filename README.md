@@ -1,7 +1,7 @@
 Interpolación lineal ponderada por la distancia inversa
 ================
 Geomorfología (GEO-114).
-2024-08-19
+2024-08-20
 
 ## Introducción
 
@@ -293,16 +293,15 @@ idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
   
   z_p <- numerator / denominator
   
-  return(z_p)
+  return(list(distances= distances, z_p=z_p))
 }
 
 # Calcular el valor interpolado en P para el estudiante 1
-estudiante <- 1
-z_p <- idw_interpolation(
-  x_coords = tables_df[[estudiante]][1:3,]$X,
-  y_coords = tables_df[[estudiante]][1:3,]$Y,
-  z_values = tables_df[[estudiante]][1:3,]$Z,
-  x_p = tables_df[[estudiante]][4,]$X,
-  y_p = tables_df[[estudiante]][4,]$X,
-  p = 2)
+sapply(1:20, function(estudiante) idw_interpolation(
+    x_coords = tables_df[[estudiante]][1:3,]$X,
+    y_coords = tables_df[[estudiante]][1:3,]$Y,
+    z_values = tables_df[[estudiante]][1:3,]$Z,
+    x_p = tables_df[[estudiante]][4,]$X,
+    y_p = tables_df[[estudiante]][4,]$Y,
+    p = 3), simplify = F)
 ```
