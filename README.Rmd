@@ -28,14 +28,29 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```{r, include=F}
 # Agregar la variable `output_format` para identificar el formato de salida
 output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+
+# Obtener la URL remota del repositorio
+repo_url <- system("git config --get remote.origin.url", intern = TRUE)
+
+# Extraer el nombre del repositorio (texto entre el último '/' y '.git')
+repo_name <- sub(".git$", "", basename(repo_url))
+
+# Extraer el nombre de la cuenta u organización (texto entre el penúltimo y último '/')
+org_name <- basename(dirname(repo_url))
+
+# Obtener el nombre del archivo RMarkdown actual
+rmd_filename <- tools::file_path_sans_ext(basename(knitr::current_input()))
+
+# Construir la URL de la versión HTML para GitHub Pages
+github_pages_url <- paste0("https://", org_name, ".github.io/", repo_name, "/", rmd_filename, ".html")
 ```
 
 ```{r, results='asis', echo=F}
 # Insertar el enlace basado en el formato de salida
 if (grepl('gfm', output_format)) {
-  cat('Versión HTML (más legible e interactiva), [aquí](README.html)\n')
+  cat('Versión HTML (quizá más legible), [aquí](', github_pages_url, ')\n', sep = '')
 } else if (output_format == 'latex') {
-  cat('Versión HTML (quizá más legible), [aquí](README.html)\n')
+  cat('Versión HTML (quizá más legible), [aquí](', github_pages_url, ')\n', sep = '')
 }
 ```
 

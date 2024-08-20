@@ -3,7 +3,8 @@ Interpolación lineal ponderada por la distancia inversa
 Geomorfología (GEO-114).
 2024-08-20
 
-Versión HTML (más legible e interactiva), [aquí](README.html)
+Versión HTML (quizá más legible),
+[aquí](https://geomorfologia-master.github.io/interpolacion-idw/README.html)
 
 ## Introducción
 
