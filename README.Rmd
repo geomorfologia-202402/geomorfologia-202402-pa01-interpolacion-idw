@@ -1,0 +1,172 @@
+---
+title: "Interpolación lineal ponderada por la distancia inversa"
+author: "Geomorfología (GEO-114)."
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output: github_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+## Introducción
+
+En este ejercicio, calcularemos el valor de la variable \( z \) en un punto de coordenadas \( x_i, y_i \), conocido el valor de la variable en otros puntos utilizando la **Interpolación Lineal Ponderada por la Distancia Inversa** (IDW, por sus siglas en inglés). Este método se basa en la idea de que los puntos más cercanos tienen una mayor influencia en la estimación del valor en un punto dado que los puntos más alejados.
+
+## Teoría
+
+El valor de la variable \( z_i \) en el punto \( (x_i, y_i) \) se puede estimar utilizando la siguiente fórmula:
+
+\[
+z_i = \frac{\sum_{j=1}^{n} \frac{z_j}{d_{ij}^p}}{\sum_{j=1}^{n} \frac{1}{d_{ij}^p}}
+\]
+
+donde:
+
+- \( z_j \) es el valor conocido de la variable en el punto \( j \).
+- \( d_{ij} \) es la distancia entre el punto \( i \) y el punto \( j \).
+- \( p \) es el parámetro de ponderación que controla la influencia de la distancia (típicamente \( p = 2 \)).
+- \( n \) es el número total de puntos conocidos.
+
+La distancia entre dos puntos \( (x_i, y_i) \) y \( (x_j, y_j) \) se calcula utilizando la distancia euclidiana:
+
+\[
+d_{ij} = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+\]
+
+## Ejercicio
+
+### Planteamiento del Problema
+
+Supongamos que tenemos los valores de \( z \) en tres puntos \( A \), \( B \) y \( C \) con las siguientes coordenadas y valores:
+
+- Punto \( A \): \( (x_A, y_A) = (1, 1) \), \( z_A = 10 \)
+- Punto \( B \): \( (x_B, y_B) = (4, 1) \), \( z_B = 20 \)
+- Punto \( C \): \( (x_C, y_C) = (2, 4) \), \( z_C = 15 \)
+
+Queremos estimar el valor de \( z_i \) en el punto \( P \) de coordenadas \( (x_P, y_P) = (2, 2) \).
+
+### Demostración con código reproducible en R
+
+Primero, calculamos las distancias entre el punto \( P \) y cada uno de los puntos \( A \), \( B \), y \( C \):
+
+```{r}
+# Coordenadas de los puntos
+x_A <- 1; y_A <- 1
+x_B <- 4; y_B <- 1
+x_C <- 2; y_C <- 4
+x_P <- 2; y_P <- 2
+
+# Valores de la variable z
+z_A <- 10
+z_B <- 20
+z_C <- 15
+
+# Distancias euclidianas
+d_PA <- sqrt((x_P - x_A)^2 + (y_P - y_A)^2)
+d_PB <- sqrt((x_P - x_B)^2 + (y_P - y_B)^2)
+d_PC <- sqrt((x_P - x_C)^2 + (y_P - y_C)^2)
+
+d_PA; d_PB; d_PC
+
+
+# Parámetro de ponderación
+p <- 2
+
+# Cálculo del valor interpolado en P
+z_P <- (z_A / d_PA^p + z_B / d_PB^p + z_C / d_PC^p) /
+       (1 / d_PA^p + 1 / d_PB^p + 1 / d_PC^p)
+
+z_P
+```
+
+## Tu turno
+
+Mandato: estima, por medio de interpolación lineal ponderada por la distancia inversa, el valor de la variable \( Z \) en el punto \( P \) de coordenadas \( X, Y ) \)
+
+
+```{r, results='asis', echo=F}
+# Cargar las librerías necesarias
+library(knitr)
+library(dplyr)
+
+# Número de estudiantes
+num_students <- 20
+
+# Función para generar una tabla para cada estudiante
+generate_table <- function(student_id) {
+  
+  # Generar coordenadas y valores de Z aleatorios para los puntos A, B, C
+  points <- data.frame(
+    `ID Punto` = c("A", "B", "C"),
+    X = sample(1:10, 3),
+    Y = sample(1:10, 3),
+    Z = sample(10:100, 3),
+    check.names = F
+  )
+  
+  # Generar las coordenadas del punto P para el estudiante
+  point_P <- data.frame(
+    `ID Punto` = "P",
+    X = sample(1:10, 1),
+    Y = sample(1:10, 1),
+    Z = NA,
+    check.names = F
+  )
+  
+  # Combinar las coordenadas de los puntos A, B, C y P
+  full_table <- bind_rows(points, point_P)
+  
+  # Crear una lista que combine el encabezado con la tabla
+  output <- list(
+    paste0("**Estudiante #", student_id, "**"),
+    kable(full_table, align = "c")
+  )
+  
+  return(list(full_table, output))
+}
+
+# Generar las 20 tablas estableceiendo la semilla para reproducibilidad
+set.seed(123); tables_list <- lapply(
+  1:num_students, function(x) generate_table(x)[[2]])
+set.seed(123); tables_df <- lapply(
+  1:num_students, function(x) generate_table(x)[[1]])
+
+# Imprimir las tablas
+for (table in tables_list) {
+  cat(table[[1]], "\n\n")
+  print(table[[2]])
+  cat("\n\n")
+}
+```
+
+
+## Función para calcular el valor interpolado en un punto P usando IDW
+
+```{r}
+idw_interpolation <- function(x_coords, y_coords, z_values, x_p, y_p, p = 2) {
+  # Calcular las distancias entre el punto P y cada uno de los puntos conocidos
+  distances <- sqrt((x_coords - x_p)^2 + (y_coords - y_p)^2)
+  
+  # Aplicar la fórmula de IDW para calcular z_p
+  numerator <- sum(z_values / distances^p)
+  denominator <- sum(1 / distances^p)
+  
+  z_p <- numerator / denominator
+  
+  return(list(distances= distances, z_p=z_p))
+}
+
+# Calcular el valor interpolado en P para el estudiante 1
+solucion <- sapply(1:20, function(estudiante) idw_interpolation(
+    x_coords = tables_df[[estudiante]][1:3,]$X,
+    y_coords = tables_df[[estudiante]][1:3,]$Y,
+    z_values = tables_df[[estudiante]][1:3,]$Z,
+    x_p = tables_df[[estudiante]][4,]$X,
+    y_p = tables_df[[estudiante]][4,]$Y,
+    p = 3), simplify = F)
+names(solucion) <- paste0('Estudiante ', 1:20)
+solucion
+```
